@@ -249,7 +249,7 @@
 </head>
 <body>
 <div class="container">
-  <h2>Auto Marking Tool</h2>
+  <h2>Teacher Auto Marking Tool</h2>
 
   <label for="answerKey">Enter Answer Key (letters only, separated by spaces or commas):</label>
   <textarea id="answerKey" rows="3" placeholder="A A A C A ..."></textarea>
@@ -355,5 +355,35 @@
   });
 </script>
 
+
+<div id="overlay" style="position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.8); display:flex; flex-direction:column; justify-content:center; align-items:center; z-index:9999;">
+  <div style="color:white; font-size:1.2rem;">Enter Password to Continue</div>
+  <input id="passwordInput" type="password" placeholder="Password" 
+         style="margin-top:10px; padding:8px; font-size:1rem; width:250px; max-width:90%; box-sizing:border-box; border-radius:4px; border:none;" />
+  <button onclick="checkPassword()" 
+          style="margin-top:10px; padding:8px 16px; font-size:1rem; cursor:pointer; border-radius:4px; border:none; background:#007BFF; color:white;">
+    Submit
+  </button>
+  <div id="errorMsg" style="color:#f88; margin-top:10px; display:none;">Wrong password, try again.</div>
+</div>
+
 </body>
 </html>
+
+
+<script>
+  const correctPassword = "tr"; // set your password here
+
+function checkPassword() {
+  const input = document.getElementById("passwordInput").value;
+  const overlay = document.getElementById("overlay");
+  const errorMsg = document.getElementById("errorMsg");
+
+  if (input === correctPassword) {
+    overlay.style.display = "none";  // hide overlay on correct password
+  } else {
+    errorMsg.style.display = "block"; // show error message
+  }
+}
+
+</script>
