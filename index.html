@@ -1,330 +1,163 @@
 
 
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Auto Marking Tool</title>
-
-<link rel="shortcut icon" href="./img/icon.ico" type="image/ico" />
-<style>
-  * {
-    box-sizing: border-box;
-  }
-  
-  body { 
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    max-width: 800px; 
-    margin: 0 auto; 
-    padding: 15px;
-    background: #f8f9fa;
-    color: #333;
-    line-height: 1.6;
-  }
-  
-  .container {
-    background: white;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-  }
-  
-  h2 {
-    text-align: center;
-    color: #2c3e50;
-    margin-bottom: 30px;
-    font-size: 1.8rem;
-  }
-  
-  label {
-    display: block;
-    font-weight: 600;
-    margin-bottom: 8px;
-    color: #555;
-    font-size: 0.95rem;
-  }
-  
-  textarea, input {
-    width: 100%;
-    font-size: 1rem;
-    padding: 12px;
-    margin-bottom: 20px;
-    border: 2px solid #e1e8ed;
-    border-radius: 8px;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    background: #fff;
-  }
-  
-  textarea:focus, input:focus {
-    outline: none;
-    border-color: #007BFF;
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
-  }
-  
-  textarea {
-    resize: vertical;
-    min-height: 80px;
-    font-family: monospace;
-  }
-  
-  button {
-    width: 100%;
-    background: linear-gradient(135deg, #007BFF, #0056b3);
-    color: white;
-    border: none;
-    padding: 14px 20px;
-    font-size: 1.1rem;
-    font-weight: 600;
-    cursor: pointer;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-  
-  button:hover {
-    background: linear-gradient(135deg, #0056b3, #004085);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
-  }
-  
-  button:active {
-    transform: translateY(0);
-  }
-  
-  .result {
-    margin-top: 25px;
-    white-space: pre-wrap;
-    background: #f8f9fa;
-    padding: 20px;
-    border-radius: 8px;
-    border-left: 4px solid #007BFF;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    font-size: 1rem;
-    line-height: 1.6;
-    max-height: 400px;
-    overflow-y: auto;
-  }
-  
-  .correct {
-    color: #28a745;
-    font-weight: bold;
-  }
-  
-  .wrong {
-    color: #dc3545;
-    font-weight: bold;
-  }
-  
-  /* Mobile optimizations */
-  @media (max-width: 480px) {
-    body {
-      padding: 10px;
-    }
-    
-    .container {
-      padding: 15px;
-    }
-    
-    h2 {
-      font-size: 1.5rem;
-      margin-bottom: 20px;
-    }
-    
-    textarea, input {
-      padding: 10px;
-      font-size: 16px; /* Prevents zoom on iOS */
-    }
-    
-    button {
-      padding: 12px 16px;
-      font-size: 1rem;
-    }
-    
-    .result {
-      padding: 15px;
-      font-size: 0.95rem;
-      max-height: 300px;
-    }
-  }
-  
-  /* Tablet optimizations */
-  @media (min-width: 481px) and (max-width: 768px) {
-    .container {
-      padding: 25px;
-    }
-    
-    h2 {
-      font-size: 1.7rem;
-    }
-  }
-  
-  /* Large screen optimizations */
-  @media (min-width: 1200px) {
-    body {
-      max-width: 900px;
-    }
-    
-    .container {
-      padding: 30px;
-    }
-    
-    h2 {
-      font-size: 2rem;
-    }
-  }
-  
-  /* Dark mode support */
-  @media (prefers-color-scheme: dark) {
-    body {
-      background: #1a1a1a;
-      color: #e1e8ed;
-    }
-    
-    .container {
-      background: #2d3748;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-    }
-    
-    h2 {
-      color: #e1e8ed;
-    }
-    
-    label {
-      color: #cbd5e0;
-    }
-    
-    textarea, input {
-      background: #4a5568;
-      border-color: #718096;
-      color: #e1e8ed;
-    }
-    
-    textarea:focus, input:focus {
-      border-color: #63b3ed;
-      box-shadow: 0 0 0 3px rgba(99, 179, 237, 0.1);
-    }
-    
-    .result {
-      background: #4a5568;
-      color: #e1e8ed;
-      border-left-color: #63b3ed;
-    }
-  }
-  
-  /* High contrast mode */
-  @media (prefers-contrast: high) {
-    textarea, input {
-      border-width: 3px;
-    }
-    
-    button {
-      border: 2px solid #fff;
-    }
-  }
-  
-  /* Reduced motion */
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-    }
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Millennium eLearning Centre</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'millennium-blue': '#0066cc',
+                        'millennium-dark': '#004499',
+                        'millennium-light': '#3399ff',
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.8s ease-in-out',
+                        'slide-up': 'slideUp 0.6s ease-out',
+                        'pulse-glow': 'pulseGlow 2s infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(40px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        pulseGlow: {
+                            '0%, 100%': { boxShadow: '0 0 20px rgba(51, 153, 255, 0.3)' },
+                            '50%': { boxShadow: '0 0 30px rgba(51, 153, 255, 0.6)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
 </head>
-<body>
-<div class="container">
-  <h2>Auto Marking Tool</h2>
-  
-  <label for="studentAnswers">Enter Your Answers (letters only, separated by spaces or commas):</label>
-  <textarea id="studentAnswers" rows="3" placeholder="D C A D A ..."></textarea>
-  
-  <label for="studentName">Your Name (optional):</label>
-  <input type="text" id="studentName" placeholder="e.g. Hazel" />
-  
-  <button id="markBtn">Mark Answers</button>
-  
-  <div class="result" id="result"></div>
-</div>
+<body class="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 text-white overflow-x-hidden">
+    <!-- Background Pattern -->
+    <div class="absolute inset-0 opacity-10">
+        <div class="absolute inset-0" style="background-image: radial-gradient(circle at 25% 25%, #3399ff 0%, transparent 50%), radial-gradient(circle at 75% 75%, #0066cc 0%, transparent 50%);"></div>
+    </div>
+    
+    <!-- Floating Elements -->
+    <div class="absolute top-20 left-10 w-32 h-32 bg-millennium-light/20 rounded-full blur-xl animate-pulse"></div>
+    <div class="absolute bottom-20 right-10 w-48 h-48 bg-millennium-blue/20 rounded-full blur-xl animate-pulse delay-1000"></div>
+    <div class="absolute top-1/3 right-1/4 w-20 h-20 bg-white/10 rounded-full blur-lg animate-bounce"></div>
+    
+    <!-- Main Container -->
+    <div class="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 py-8">
+        
+        <!-- Header Section -->
+        <div class="text-center mb-12 animate-fade-in">
+            <!-- Logo/Icon -->
+            <div class="mb-8 flex justify-center">
+                <div class="relative">
+                    <div class="w-24 h-24 md:w-32 md:h-32 bg-gradient-to-r from-millennium-light to-millennium-blue rounded-2xl flex items-center justify-center shadow-2xl animate-pulse-glow">
+                        <svg class="w-12 h-12 md:w-16 md:h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                        </svg>
+                    </div>
+                    <div class="absolute -inset-1 bg-gradient-to-r from-millennium-light to-millennium-blue rounded-2xl blur opacity-30 animate-pulse"></div>
+                </div>
+            </div>
+            
+            <!-- Title -->
+            <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 bg-gradient-to-r from-white via-millennium-light to-white bg-clip-text text-transparent leading-tight">
+                Millennium
+                <span class="block text-3xl md:text-5xl lg:text-6xl mt-2">eLearning Centre</span>
+            </h1>
+            
+            <!-- Subtitle -->
+            <p class="text-lg md:text-xl lg:text-2xl text-slate-300 max-w-3xl mx-auto leading-relaxed">
+                Empowering education through innovative digital learning experiences
+            </p>
+        </div>
+        
+        <!-- Buttons Section -->
+        <div class="flex flex-col sm:flex-row gap-6 md:gap-8 w-full max-w-2xl animate-slide-up">
+            
+            <!-- Students Button -->
+            <a href="students.html" class="group relative flex-1 bg-gradient-to-r from-millennium-blue to-millennium-dark hover:from-millennium-light hover:to-millennium-blue text-white py-6 md:py-8 px-8 md:px-12 rounded-2xl font-bold text-lg md:text-xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl overflow-hidden block text-center no-underline">
+                <!-- Button Background Effect -->
+                <div class="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+                
+                <!-- Button Content -->
+                <div class="relative flex items-center justify-center gap-4">
+                    <svg class="w-8 h-8 md:w-10 md:h-10 group-hover:rotate-12 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                    </svg>
+                    <span>For Students</span>
+                    <svg class="w-6 h-6 group-hover:translate-x-2 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                    </svg>
+                </div>
+                
+                <!-- Hover Effect -->
+                <div class="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-transparent via-white/5 to-transparent"></div>
+            </a>
+            
+            <!-- Teachers Button -->
+            <a href="teachers.html" class="group relative flex-1 bg-gradient-to-r from-slate-700 to-slate-800 hover:from-millennium-blue hover:to-millennium-dark text-white py-6 md:py-8 px-8 md:px-12 rounded-2xl font-bold text-lg md:text-xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl overflow-hidden border-2 border-slate-600 hover:border-millennium-light block text-center no-underline">
+                <!-- Button Background Effect -->
+                <div class="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+                
+                <!-- Button Content -->
+                <div class="relative flex items-center justify-center gap-4">
+                    <svg class="w-8 h-8 md:w-10 md:h-10 group-hover:rotate-12 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                    </svg>
+                    <span>For Teachers</span>
+                    <svg class="w-6 h-6 group-hover:translate-x-2 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                    </svg>
+                </div>
+                
+                <!-- Hover Effect -->
+                <div class="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-transparent via-white/5 to-transparent"></div>
+            </a>
+        </div>
+        
+        <!-- Footer Info -->
+        <div class="mt-16 text-center text-slate-400 max-w-lg animate-fade-in">
+            <p class="text-sm md:text-base">
+                Welcome to the future of education. Choose your path to get started.
+            </p>
+        </div>
+    </div>
+    
+    <!-- Interactive Particles -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+        <div class="particle absolute w-2 h-2 bg-white/30 rounded-full animate-ping" style="top: 20%; left: 15%; animation-delay: 0s;"></div>
+        <div class="particle absolute w-1 h-1 bg-millennium-light/40 rounded-full animate-ping" style="top: 60%; left: 85%; animation-delay: 1s;"></div>
+        <div class="particle absolute w-3 h-3 bg-millennium-blue/20 rounded-full animate-ping" style="top: 80%; left: 10%; animation-delay: 2s;"></div>
+        <div class="particle absolute w-1 h-1 bg-white/50 rounded-full animate-ping" style="top: 30%; left: 80%; animation-delay: 1.5s;"></div>
+    </div>
 
-<script>
-  // Built-in answer key: update here as needed
-  const answerKey = ['A', 'A', 'A', 'C', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A'];
-  
-  function cleanInput(input) {
-    return input.trim().toUpperCase().replace(/,/g, ' ').split(/\s+/);
-  }
-  
-  document.getElementById('markBtn').addEventListener('click', () => {
-    const studentAnsRaw = document.getElementById('studentAnswers').value;
-    const studentName = document.getElementById('studentName').value.trim() || 'Student';
-    
-    if (!studentAnsRaw) {
-      alert('Please enter your answers.');
-      return;
-    }
-    
-    const studentAnswers = cleanInput(studentAnsRaw);
-    
-    if (studentAnswers.length !== answerKey.length) {
-      alert(`Number of answers (${studentAnswers.length}) does not match number of questions (${answerKey.length}).`);
-      return;
-    }
-    
-    let correctCount = 0;
-    let wrongCount = 0;
-    let wrongQuestions = [];
-    let output = `${studentName}'s Answers & Marking\n${'='.repeat(40)}\n\n`;
-    
-    for (let i = 0; i < answerKey.length; i++) {
-      const qNum = i + 1;
-      const studentAns = studentAnswers[i];
-      const correctAns = answerKey[i];
-      
-      if (studentAns === correctAns) {
-        output += `${qNum.toString().padStart(2)}. ${studentAns} ✅\n`;
-        correctCount++;
-      } else {
-        output += `${qNum.toString().padStart(2)}. ${studentAns} ❌ Correct: ${correctAns}\n`;
-        wrongCount++;
-        wrongQuestions.push(qNum);
-      }
-    }
-    
-    output += `\n${'='.repeat(40)}\nSUMMARY:\n`;
-    output += `✅ Correct: ${correctCount}/${answerKey.length}\n`;
-    output += `❌ Wrong: ${wrongCount}/${answerKey.length}`;
-    
-    if (wrongCount > 0) {
-      output += ` (Questions: ${wrongQuestions.join(', ')})`;
-    }
-    
-    const percentage = Math.round((correctCount / answerKey.length) * 100);
-    output += `\n📊 Score: ${percentage}%\n`;
-    
-    if (wrongCount === 0) {
-      output += `\n🎉 PERFECT SCORE! Excellent work!\nYou got all questions correct!`;
-    } else if (percentage >= 80) {
-      output += `\n⭐ Great job! You're doing well.\nReview the missed questions to improve further.`;
-    } else if (percentage >= 60) {
-      output += `\n💪 Good effort! Keep practicing.\nFocus on the areas where you missed questions.`;
-    } else {
-      output += `\n📚 Keep studying and practicing.\nReview the material and try again!`;
-    }
-    
-    document.getElementById('result').textContent = output;
-    document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  });
-  
-  // Enter key support for better UX
-  document.getElementById('studentName').addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-      document.getElementById('markBtn').click();
-    }
-  });
-</script>
+    <script>
+        // Add some interactive effects
+        document.addEventListener('mousemove', (e) => {
+            const particles = document.querySelectorAll('.particle');
+            particles.forEach((particle, index) => {
+                const speed = (index + 1) * 0.01;
+                const x = e.clientX * speed;
+                const y = e.clientY * speed;
+                particle.style.transform = `translate(${x}px, ${y}px)`;
+            });
+        });
+        
+        // Add loading animation on page load
+        window.addEventListener('load', () => {
+            document.body.classList.add('loaded');
+        });
+    </script>
 </body>
 </html>

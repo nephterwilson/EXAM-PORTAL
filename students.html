@@ -1,0 +1,330 @@
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Auto Marking Tool</title>
+
+<link rel="shortcut icon" href="./img/icon.ico" type="image/ico" />
+<style>
+  * {
+    box-sizing: border-box;
+  }
+  
+  body { 
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    max-width: 800px; 
+    margin: 0 auto; 
+    padding: 15px;
+    background: #f8f9fa;
+    color: #333;
+    line-height: 1.6;
+  }
+  
+  .container {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  }
+  
+  h2 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 30px;
+    font-size: 1.8rem;
+  }
+  
+  label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #555;
+    font-size: 0.95rem;
+  }
+  
+  textarea, input {
+    width: 100%;
+    font-size: 1rem;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 2px solid #e1e8ed;
+    border-radius: 8px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    background: #fff;
+  }
+  
+  textarea:focus, input:focus {
+    outline: none;
+    border-color: #007BFF;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+  }
+  
+  textarea {
+    resize: vertical;
+    min-height: 80px;
+    font-family: monospace;
+  }
+  
+  button {
+    width: 100%;
+    background: linear-gradient(135deg, #007BFF, #0056b3);
+    color: white;
+    border: none;
+    padding: 14px 20px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  button:hover {
+    background: linear-gradient(135deg, #0056b3, #004085);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+  }
+  
+  button:active {
+    transform: translateY(0);
+  }
+  
+  .result {
+    margin-top: 25px;
+    white-space: pre-wrap;
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    border-left: 4px solid #007BFF;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    font-size: 1rem;
+    line-height: 1.6;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+  
+  .correct {
+    color: #28a745;
+    font-weight: bold;
+  }
+  
+  .wrong {
+    color: #dc3545;
+    font-weight: bold;
+  }
+  
+  /* Mobile optimizations */
+  @media (max-width: 480px) {
+    body {
+      padding: 10px;
+    }
+    
+    .container {
+      padding: 15px;
+    }
+    
+    h2 {
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+    }
+    
+    textarea, input {
+      padding: 10px;
+      font-size: 16px; /* Prevents zoom on iOS */
+    }
+    
+    button {
+      padding: 12px 16px;
+      font-size: 1rem;
+    }
+    
+    .result {
+      padding: 15px;
+      font-size: 0.95rem;
+      max-height: 300px;
+    }
+  }
+  
+  /* Tablet optimizations */
+  @media (min-width: 481px) and (max-width: 768px) {
+    .container {
+      padding: 25px;
+    }
+    
+    h2 {
+      font-size: 1.7rem;
+    }
+  }
+  
+  /* Large screen optimizations */
+  @media (min-width: 1200px) {
+    body {
+      max-width: 900px;
+    }
+    
+    .container {
+      padding: 30px;
+    }
+    
+    h2 {
+      font-size: 2rem;
+    }
+  }
+  
+  /* Dark mode support */
+  @media (prefers-color-scheme: dark) {
+    body {
+      background: #1a1a1a;
+      color: #e1e8ed;
+    }
+    
+    .container {
+      background: #2d3748;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+    
+    h2 {
+      color: #e1e8ed;
+    }
+    
+    label {
+      color: #cbd5e0;
+    }
+    
+    textarea, input {
+      background: #4a5568;
+      border-color: #718096;
+      color: #e1e8ed;
+    }
+    
+    textarea:focus, input:focus {
+      border-color: #63b3ed;
+      box-shadow: 0 0 0 3px rgba(99, 179, 237, 0.1);
+    }
+    
+    .result {
+      background: #4a5568;
+      color: #e1e8ed;
+      border-left-color: #63b3ed;
+    }
+  }
+  
+  /* High contrast mode */
+  @media (prefers-contrast: high) {
+    textarea, input {
+      border-width: 3px;
+    }
+    
+    button {
+      border: 2px solid #fff;
+    }
+  }
+  
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h2>Auto Marking Tool</h2>
+  
+  <label for="studentAnswers">Enter Your Answers (letters only, separated by spaces or commas):</label>
+  <textarea id="studentAnswers" rows="3" placeholder="D C A D A ..."></textarea>
+  
+  <label for="studentName">Your Name (optional):</label>
+  <input type="text" id="studentName" placeholder="e.g. Hazel" />
+  
+  <button id="markBtn">Mark Answers</button>
+  
+  <div class="result" id="result"></div>
+</div>
+
+<script>
+  // Built-in answer key: update here as needed
+  const answerKey = ['A', 'A', 'A', 'C', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A'];
+  
+  function cleanInput(input) {
+    return input.trim().toUpperCase().replace(/,/g, ' ').split(/\s+/);
+  }
+  
+  document.getElementById('markBtn').addEventListener('click', () => {
+    const studentAnsRaw = document.getElementById('studentAnswers').value;
+    const studentName = document.getElementById('studentName').value.trim() || 'Student';
+    
+    if (!studentAnsRaw) {
+      alert('Please enter your answers.');
+      return;
+    }
+    
+    const studentAnswers = cleanInput(studentAnsRaw);
+    
+    if (studentAnswers.length !== answerKey.length) {
+      alert(`Number of answers (${studentAnswers.length}) does not match number of questions (${answerKey.length}).`);
+      return;
+    }
+    
+    let correctCount = 0;
+    let wrongCount = 0;
+    let wrongQuestions = [];
+    let output = `${studentName}'s Answers & Marking\n${'='.repeat(40)}\n\n`;
+    
+    for (let i = 0; i < answerKey.length; i++) {
+      const qNum = i + 1;
+      const studentAns = studentAnswers[i];
+      const correctAns = answerKey[i];
+      
+      if (studentAns === correctAns) {
+        output += `${qNum.toString().padStart(2)}. ${studentAns} ✅\n`;
+        correctCount++;
+      } else {
+        output += `${qNum.toString().padStart(2)}. ${studentAns} ❌ Correct: ${correctAns}\n`;
+        wrongCount++;
+        wrongQuestions.push(qNum);
+      }
+    }
+    
+    output += `\n${'='.repeat(40)}\nSUMMARY:\n`;
+    output += `✅ Correct: ${correctCount}/${answerKey.length}\n`;
+    output += `❌ Wrong: ${wrongCount}/${answerKey.length}`;
+    
+    if (wrongCount > 0) {
+      output += ` (Questions: ${wrongQuestions.join(', ')})`;
+    }
+    
+    const percentage = Math.round((correctCount / answerKey.length) * 100);
+    output += `\n📊 Score: ${percentage}%\n`;
+    
+    if (wrongCount === 0) {
+      output += `\n🎉 PERFECT SCORE! Excellent work!\nYou got all questions correct!`;
+    } else if (percentage >= 80) {
+      output += `\n⭐ Great job! You're doing well.\nReview the missed questions to improve further.`;
+    } else if (percentage >= 60) {
+      output += `\n💪 Good effort! Keep practicing.\nFocus on the areas where you missed questions.`;
+    } else {
+      output += `\n📚 Keep studying and practicing.\nReview the material and try again!`;
+    }
+    
+    document.getElementById('result').textContent = output;
+    document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  });
+  
+  // Enter key support for better UX
+  document.getElementById('studentName').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      document.getElementById('markBtn').click();
+    }
+  });
+</script>
+</body>
+</html>
