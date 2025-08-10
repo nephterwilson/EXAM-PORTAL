@@ -1,0 +1,254 @@
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Auto Marking Tool</title>
+<link rel="shortcut icon" href="./img/icon.ico" type="image/ico" />
+<style>
+  * {
+    box-sizing: border-box;
+  }
+  
+  body { 
+    font-family: Arial, sans-serif; 
+    max-width: 600px; 
+    margin: 20px auto; 
+    padding: 20px;
+    line-height: 1.5;
+  }
+  
+  h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: clamp(1.5rem, 4vw, 2rem);
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    font-size: clamp(0.9rem, 2.5vw, 1rem);
+  }
+  
+  textarea, input { 
+    width: 100%; 
+    font-size: clamp(0.9rem, 2.5vw, 1rem);
+    padding: 12px; 
+    margin: 8px 0 20px 0; 
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    resize: vertical;
+    transition: border-color 0.3s ease;
+  }
+  
+  textarea:focus, input:focus {
+    outline: none;
+    border-color: #007BFF;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+  }
+  
+  textarea {
+    min-height: 60px;
+  }
+  
+  button { 
+    background: #007BFF; 
+    color: white; 
+    border: none; 
+    padding: 12px 24px; 
+    font-size: clamp(0.9rem, 2.5vw, 1rem);
+    cursor: pointer; 
+    border-radius: 6px;
+    width: 100%;
+    margin: 10px 0 20px 0;
+    transition: all 0.3s ease;
+    font-weight: bold;
+  }
+  
+  button:hover { 
+    background: #0056b3;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+  }
+  
+  button:active {
+    transform: translateY(0);
+  }
+  
+  .result { 
+    margin-top: 30px; 
+    white-space: pre-wrap; 
+    background: #f8f9fa; 
+    padding: 20px; 
+    border-radius: 8px;
+    border-left: 4px solid #007BFF;
+    font-size: clamp(0.85rem, 2.2vw, 0.95rem);
+    line-height: 1.6;
+    overflow-x: auto;
+  }
+  
+  .correct { 
+    color: #28a745; 
+    font-weight: bold; 
+  }
+  
+  .wrong { 
+    color: #dc3545; 
+    font-weight: bold; 
+  }
+
+  /* Mobile optimizations */
+  @media (max-width: 480px) {
+    body {
+      margin: 10px;
+      padding: 15px;
+    }
+    
+    h2 {
+      margin-bottom: 20px;
+    }
+    
+    textarea, input {
+      padding: 10px;
+      margin: 6px 0 15px 0;
+    }
+    
+    button {
+      padding: 14px 20px;
+      margin: 15px 0;
+    }
+    
+    .result {
+      padding: 15px;
+      margin-top: 20px;
+    }
+  }
+  
+  /* Tablet optimizations */
+  @media (min-width: 481px) and (max-width: 768px) {
+    body {
+      padding: 25px;
+    }
+    
+    button {
+      max-width: 200px;
+      margin: 15px auto;
+      display: block;
+    }
+  }
+  
+  /* Large screens */
+  @media (min-width: 769px) {
+    body {
+      padding: 30px;
+    }
+    
+    button {
+      max-width: 150px;
+      margin: 20px auto;
+      display: block;
+    }
+  }
+  
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    textarea, input {
+      border-width: 3px;
+    }
+    
+    button {
+      border: 2px solid #ffffff;
+    }
+  }
+  
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      transition: none !important;
+      animation: none !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+<h2>Auto Marking Tool</h2>
+
+<label for="answerKey">Enter Answer Key (letters only, separated by spaces or commas):</label>
+<textarea id="answerKey" rows="2" placeholder="A A A C A ..."></textarea>
+
+<label for="studentAnswers">Enter Student's Answers (letters only, separated by spaces or commas):</label>
+<textarea id="studentAnswers" rows="2" placeholder="D C A D A ..."></textarea>
+
+<label for="studentName">Student Name (optional):</label>
+<input type="text" id="studentName" placeholder="e.g. Hazel" />
+
+<button id="markBtn">Mark</button>
+
+<div class="result" id="result"></div>
+
+<script>
+  function cleanInput(input) {
+    // Remove extra spaces, commas, convert to uppercase, split by space or comma
+    return input.trim().toUpperCase().replace(/,/g, ' ').split(/\s+/);
+  }
+
+  document.getElementById('markBtn').addEventListener('click', () => {
+    const answerKeyRaw = document.getElementById('answerKey').value;
+    const studentAnsRaw = document.getElementById('studentAnswers').value;
+    const studentName = document.getElementById('studentName').value.trim() || 'Student';
+
+    if (!answerKeyRaw || !studentAnsRaw) {
+      alert('Please enter both answer key and student answers.');
+      return;
+    }
+
+    const answerKey = cleanInput(answerKeyRaw);
+    const studentAnswers = cleanInput(studentAnsRaw);
+
+    if (studentAnswers.length !== answerKey.length) {
+      alert(`Number of student answers (${studentAnswers.length}) does not match number of questions (${answerKey.length}).`);
+      return;
+    }
+
+    let correctCount = 0;
+    let wrongCount = 0;
+    let wrongQuestions = [];
+    let output = `${studentName}'s Answers & Marking\n\n`;
+
+    for (let i = 0; i < answerKey.length; i++) {
+      const qNum = i + 1;
+      const studentAns = studentAnswers[i];
+      const correctAns = answerKey[i];
+      if (studentAns === correctAns) {
+        output += `${qNum}. ${studentAns} ✅\n`;
+        correctCount++;
+      } else {
+        output += `${qNum}. ${studentAns} ❌ Correct answer: ${correctAns}\n`;
+        wrongCount++;
+        wrongQuestions.push(qNum);
+      }
+    }
+
+    output += `\nSummary:\n✅ Correct: ${correctCount}\n❌ Wrong: ${wrongCount}`;
+    if (wrongCount > 0) {
+      output += ` (Questions ${wrongQuestions.join(', ')})`;
+    }
+
+    // Simple feedback message
+    if (wrongCount === 0) {
+      output += `\n\nExcellent! You got all questions correct. 🎉`;
+    } else {
+      output += `\n\nFeedback:\nReview the questions you missed and practice more to improve. Keep it up! 💪`;
+    }
+
+    document.getElementById('result').textContent = output;
+  });
+</script>
+
+</body>
+</html>
